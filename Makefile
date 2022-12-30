@@ -28,8 +28,11 @@ $(wildcard $(SYS_SOURCE)/*/*.c)
 
 ######################################
 #openocd路径配置 
-OPENOCD_DOWN_PATH = C:/Program Files (x86)/openocd/share/openocd/scripts/interface/jlink.cfg
-OPENOCD_CHIP_PATH =C:/Program Files (x86)/openocd/share/openocd/scripts/target/stm32f1x.cfg
+#OPENOCD_DOWN_PATH = C:/Program Files (x86)/openocd/share/openocd/scripts/interface/jlink.cfg
+#OPENOCD_CHIP_PATH =C:/Program Files (x86)/openocd/share/openocd/scripts/target/stm32f1x.cfg
+
+OPENOCD_DOWN_PATH = D:\freertos\ARM-GCC\openocd\share\openocd\scripts\interface\jlink.cfg
+OPENOCD_CHIP_PATH =D:\freertos\ARM-GCC\openocd\share\openocd\scripts/target\stm32f1x.cfg
 
 ######################################
 #芯片flash大小选择
@@ -57,7 +60,7 @@ DEFINE = STM32F10X_MD
 # building variables
 ######################################
 # debug build?
-DEBUG = 1
+DEBUG = 0
 # optimization
 OPT = -O0
 
