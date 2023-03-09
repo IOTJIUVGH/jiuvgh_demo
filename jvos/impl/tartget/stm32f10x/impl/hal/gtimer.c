@@ -8,7 +8,7 @@
 
 #define CLK_10KHZ      7199
 
-static const TIM_TypeDef *
+static TIM_TypeDef *
     timer_remap[] =
         {
             TIM2,
@@ -44,10 +44,11 @@ merr_t mhal_gtimer_open(mhal_gtimer_t timer,mhal_gtimer_mode_t mode, uint32_t ti
     TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
 	NVIC_InitTypeDef NVIC_InitStructure;
 
+
 	RCC_APB1PeriphClockCmd(timer_rcc_remap[ timer ], ENABLE); //时钟使能
 
     irq_fun[ timer ].irq_handler = function;
-    irq_fun[ timer ].arg = (uint32_t)arg;
+    irq_fun[ timer ].arg = (uint32_t *)arg;
 
 	TIM_TimeBaseStructure.TIM_Period = 10 * time -1; //设置在下一个更新事件装入活动的自动重装载寄存器周期的值	 计数到5000为500ms
 	TIM_TimeBaseStructure.TIM_Prescaler =CLK_10KHZ; //设置用来作为TIMx时钟频率除数的预分频值  10Khz的计数频率  
@@ -60,11 +61,15 @@ merr_t mhal_gtimer_open(mhal_gtimer_t timer,mhal_gtimer_mode_t mode, uint32_t ti
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;  
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE; 
 	NVIC_Init(&NVIC_InitStructure);  
+
+    return kNoErr;
 }
 
 merr_t mhal_gtimer_start(mhal_gtimer_t timer)
 {
     TIM_Cmd(timer_remap[timer], ENABLE);
+
+    return kNoErr;
 }
 
 merr_t mhal_gtimer_stop(mhal_gtimer_t timer)
@@ -75,6 +80,8 @@ merr_t mhal_gtimer_stop(mhal_gtimer_t timer)
 merr_t mhal_gtimer_close(mhal_gtimer_t timer)
 {
     TIM_DeInit(timer_remap[timer]);
+
+    return kNoErr;
 }
 
 void TIM2_IRQHandler(void)   //TIM3中断

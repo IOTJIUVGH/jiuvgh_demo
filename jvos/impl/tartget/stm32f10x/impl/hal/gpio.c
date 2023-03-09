@@ -20,15 +20,14 @@ typedef struct
    uint32_t* arg;
 } irq_fun_t;
 
-
 static const uint8_t gpio_mode_remap[] =
     {
-        [INPUT_PULL_UP] = { GPIO_Mode_IPU},
-        [INPUT_PULL_DOWN] = { GPIO_Mode_IPD},
-        [INPUT_HIGH_IMPEDANCE] = {GPIO_Mode_IN_FLOATING},
-        [OUTPUT_PUSH_PULL] = {0 },
-        [OUTPUT_OPEN_DRAIN_NO_PULL] = { GPIO_Mode_Out_OD},//开漏
-        [OUTPUT_OPEN_DRAIN_PULL_UP] = { GPIO_Mode_Out_PP},
+        GPIO_Mode_IPU,
+        GPIO_Mode_IPD,
+        GPIO_Mode_IN_FLOATING,
+        0,
+        GPIO_Mode_Out_OD, // 开漏
+        GPIO_Mode_Out_PP,
 };
 
 static const uint32_t gpio_rcc_remap[] =
@@ -164,7 +163,7 @@ static const uint8_t gpio_exit_trigger[] =
 };
 
 
-static const GPIO_TypeDef *
+static GPIO_TypeDef *
     gpio_port_remap[] =
         {
             GPIOA,
@@ -183,6 +182,8 @@ merr_t mhal_gpio_info(gpio_dev_t* gpio_dev,mhal_gpio_t gpio)
 
     gpio_dev->port = gpio % GPIO_Pin_Max;
     gpio_dev->pin = gpio / GPIO_Pin_Max;
+
+    return kNoErr;
 }
 
 merr_t mhal_gpio_open(mhal_gpio_t gpio, mhal_gpio_config_t config)
@@ -314,14 +315,14 @@ merr_t mhal_gpio_int_on(mhal_gpio_t gpio, mhal_gpio_irq_trigger_t trigger, mhal_
         NVIC_InitStructure.NVIC_IRQChannel = EXTI9_5_IRQn;
        
         irq_fun[exit9_5].irq_handler = handler;
-        irq_fun[exit9_5].arg[gpio_dev.pin]  = (uint32_t *)arg;
+        irq_fun[exit9_5].arg  = (uint32_t *)arg;
     }
        
     if(gpio_dev.pin > Pin_9)
     {
         NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn;
         irq_fun[exit15_10].irq_handler = handler;
-        irq_fun[exit15_10].arg[gpio_dev.pin]  = (uint32_t *)arg;
+        irq_fun[exit15_10].arg  = (uint32_t *)arg;
     }
        
   	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x0f;	

@@ -1,8 +1,27 @@
 #include "jtimer.h"
 #include "gtimer.h"
+#include "peripheral_remap.h"
 
 static jtimer_t svtimer[JTIMER_NUM]; 
 typedef void(*PFN_Callback_t)(void);
+
+void jtimer_updatehandler(void* arg )    		
+{
+	for (int i = 0; i < JTIMER_NUM; i++)  //11
+	{
+		if (svtimer[i].msec != 0)
+		{
+			svtimer[i].msec--;
+			if (svtimer[i].pCallback != 0)
+			{
+				if (svtimer[i].msec == 0) 
+				{
+					((PFN_Callback_t)svtimer[i].pCallback)();
+				}
+			}
+		}
+	}
+}
 
 void jtimer_init()
 {
@@ -12,8 +31,8 @@ void jtimer_init()
 		svtimer[i].pCallback = 0;
 	}
 	
-	mhal_gtimer_open(TIM2, PERIOIC, 1,  &Vtimer_UpdateHandler, NULL);
-	mhal_gtimer_start(TIM2)
+	mhal_gtimer_open(TIM_2, PERIOIC, 1,  &jtimer_updatehandler, 0);
+	mhal_gtimer_start(TIM_2);
 }
 
 void jtimer_settimer(jtimer_name_t name,timer_res_t  msec,void* pCallback)  
@@ -34,22 +53,4 @@ u8 jtimer_timerelapsed(jtimer_name_t name)
 		return TRUE_V;
 	else
 		return FALSE_V;
-}
-
-void jtimer_updatehandler(void)    		
-{
-	for (int i = 0; i < JTIMER_NUM; i++)  //11
-	{
-		if (svtimer[i].msec != 0)
-		{
-			svtimer[i].msec--;
-			if (svtimer[i].pCallback != 0)
-			{
-				if (svtimer[i].msec == 0) 
-				{
-					((PFN_Callback_t)svtimer[i].pCallback)();
-				}
-			}
-		}
-	}
 }

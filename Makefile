@@ -1,17 +1,23 @@
 TARGET = APP
 
-SYS_DIR = -I./Hardware
-SYS_SOURCE = ./Hardware
+SYS_DIR = -I./jvos/impl/tartget/stm32f10x
+SYS_SOURCE = ./jvos/impl/tartget/stm32f10x/impl
+LIB_SOURCE = ./jvos/component/soc/stm32/stm32f10x/fwlib
 ######################################
 
 # 若添加新的文件在目录Hardware下，只需在“USER_INC”添加即可，若不是需要在“USER_SOURCE”添加.c文件的路径
 # user_include 添加.h文件所在路径
 USER_INC = \
-$(SYS_DIR)/usart 
+$(SYS_DIR)/include \
+$(SYS_DIR)/include/mhal
+
 
 # user_Source 添加.c文件
 USER_SOURCE = \
 $(wildcard $(SYS_SOURCE)/*/*.c)
+
+FW_LIB_SOURCE = \
+$(wildcard $(LIB_SOURCE)/*/*.c)
 ######################################
 #openocd路径配置 
 #OPENOCD_DOWN_PATH = C:/Program Files (x86)/openocd/share/openocd/scripts/interface/jlink.cfg
@@ -62,12 +68,15 @@ BUILD_DIR = build
 # C sources
 C_SOURCES =  \
 ./app/main.c \
-./jvos/MCU/stm32/stm32f103/system_stm32f10x.c 
-#$(USER_SOURCE)
+./jvos/component/soc/stm32/stm32f10x/system_stm32f10x.c \
+$(USER_SOURCE) \
+$(FW_LIB_SOURCE)
+
+
 
 # ASM sources
 ASM_SOURCES =  \
-jvos/MCU/stm32/stm32f103/startup/$(STARTUP)
+jvos/component/soc/stm32/stm32f10x/startup/$(STARTUP)
 
 
 #######################################
@@ -111,6 +120,7 @@ AS_DEFS =
 
 # C defines
 C_DEFS =  \
+-DUSE_STDPERIPH_DRIVER  \
 -D$(DEFINE)
 
 
@@ -119,8 +129,9 @@ AS_INCLUDES =
 
 # C includes
 C_INCLUDES =  \
--I./jvos/MCU/stm32/stm32f103 
-#$(USER_INC)
+-I./jvos/component/soc/stm32/stm32f10x \
+-I./jvos/component/soc/stm32/stm32f10x/fwlib/include \
+$(USER_INC)
 
 
 # compile gcc flags
@@ -141,7 +152,7 @@ CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 # LDFLAGS
 #######################################
 # link script
-LDSCRIPT = ./jvos/MCU/stm32/stm32f103/Link/$(FLASH_SIZE)/stm32_flash.ld
+LDSCRIPT = ./jvos/component/soc/stm32/stm32f10x/Link/$(FLASH_SIZE)/stm32_flash.ld
 
 # libraries
 LIBS = -lc -lm -lnosys 

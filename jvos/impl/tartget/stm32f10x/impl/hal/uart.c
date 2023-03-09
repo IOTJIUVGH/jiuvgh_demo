@@ -64,12 +64,12 @@ static const uint32_t gpio_pin_remap[] =
        GPIO_Pin_15
 };
 
-static const mhal_uart_config_t default_config = {
-    .data_width = USART_WordLength_8b,
-    .parity = USART_Parity_No,
-    .stop_bits = USART_StopBits_1,
-    .flow_control = USART_HardwareFlowControl_None,
-};
+// static const mhal_uart_config_t default_config = {
+//     .data_width = USART_WordLength_8b,
+//     .parity = USART_Parity_No,
+//     .stop_bits = USART_StopBits_1,
+//     .flow_control = USART_HardwareFlowControl_None,
+// };
 
 merr_t mhal_uart_open(int uart, const mhal_uart_config_t *config, mhal_uart_pinmux_t *pinmux)
 {
@@ -126,7 +126,8 @@ merr_t mhal_uart_write(int uart, const void *data, uint32_t size)
     for( uint16_t i = 0; i < size; i++ )
     {
         while((uart_port_remap [uart]->SR & 0x80)==0x00);
-        uart_port_remap [uart]->DR=*(data+i);
+        // uart_port_remap [uart] -> DR = (uint16_t) (*(data+i));
+        
     }
 
     return kNoErr;
@@ -144,11 +145,12 @@ merr_t mhal_uart_read(int uart, void *data, uint32_t *size, uint32_t timeout)
 
 
     *size = uart1_data.uart1_rx_total_cnt;
+    err = kNoErr;
 
-    return kNoErr;
+    return err;
 }
 
-static uart1_rxtimeout()
+static void uart1_rxtimeout()
 {
     uart1_data.uart1_rx_total_cnt = uart1_rx_cnt;
 	uart1_rx_cnt = 0;
@@ -161,7 +163,7 @@ void USART1_IRQHandler(void)
     {
         if (uart1_data.uart1_rx_total_cnt == 0)
         {
-            Vtimer_SetTimer(JTIM0, 3, uart1_rxtimeout);
+            jtimer_settimer(JTIM0, 3, uart1_rxtimeout);
             uart1_data.uart1_rx_buf[uart1_rx_cnt] = USART1->DR;
             if (uart1_rx_cnt < (uart1_data.uart1_rx_max - 1))
                 uart1_rx_cnt++;

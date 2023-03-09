@@ -3,10 +3,10 @@
 
 #include "stm32f10x.h"
 
-typedef enum
+enum
 {
-  FALSE_V = 0,
-  TRUE_V = !FALSE_V
+  FALSE_V,
+  TRUE_V
 };
 
 typedef enum
@@ -23,7 +23,7 @@ typedef enum
   JTIM9,
   JTIM10,
   JTIMER_NUM
-} jtimer_name_t; // VtimerName_t ��enum VtimerName�ı���
+} jtimer_name_t;
 
 typedef u32 timer_res_t;
 
@@ -37,6 +37,5 @@ void jtimer_init(void);
 void jtimer_settimer(jtimer_name_t name, timer_res_t msec, void *pCallback);
 void jtimer_killtimer(jtimer_name_t name);
 uint8_t jtimer_timerelapsed(jtimer_name_t name);
-void jtimer_updatehandler(void);
 
 #endif

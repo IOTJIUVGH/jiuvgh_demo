@@ -8,8 +8,13 @@
  * @github:             https://github.com/IOTJIUVGH/jiuvgh_demo.git
  */
 #include <stdio.h>
+#include "gpio.h"
+#include "peripheral_remap.h"
 
 int main(void) {
+
+	mhal_gpio_open(PA_0, OUTPUT_OPEN_DRAIN_PULL_UP);
+
 	while (1)
 	{
 

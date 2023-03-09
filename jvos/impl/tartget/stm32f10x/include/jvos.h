@@ -49,6 +49,7 @@
 // #include "mxos_gprs.h"
 #include <stdint.h>
 #include <stdio.h>
+#include "jerr.h"
 
 #ifdef __cplusplus
 extern "C"
