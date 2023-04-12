@@ -3,6 +3,9 @@ TARGET = APP
 SYS_DIR = -I./jvos/impl/tartget/stm32f10x
 SYS_SOURCE = ./jvos/impl/tartget/stm32f10x/impl
 LIB_SOURCE = ./jvos/component/soc/stm32/stm32f10x/fwlib
+OS_SOURCE = ./jvos/component/os/freertos/freertos_23.4.10/Source
+
+
 ######################################
 
 # 若添加新的文件在目录Hardware下，只需在“USER_INC”添加即可，若不是需要在“USER_SOURCE”添加.c文件的路径
@@ -18,6 +21,9 @@ $(wildcard $(SYS_SOURCE)/*/*.c)
 
 FW_LIB_SOURCE = \
 $(wildcard $(LIB_SOURCE)/*/*.c)
+
+OS_LIB_SOURCE = \
+$(wildcard $(OS_SOURCE)/*.c)
 ######################################
 #openocd路径配置 
 #OPENOCD_DOWN_PATH = C:/Program Files (x86)/openocd/share/openocd/scripts/interface/jlink.cfg
@@ -69,8 +75,11 @@ BUILD_DIR = build
 C_SOURCES =  \
 ./app/main.c \
 ./jvos/component/soc/stm32/stm32f10x/system_stm32f10x.c \
+./jvos/component/os/freertos/freertos_23.4.10/Source/portable/GCC/ARM_CM3/port.c \
+./jvos/component/os/freertos/freertos_23.4.10/Source/portable/MemMang/heap_5.c \
 $(USER_SOURCE) \
-$(FW_LIB_SOURCE)
+$(FW_LIB_SOURCE) \
+$(OS_LIB_SOURCE)
 
 
 
@@ -131,6 +140,8 @@ AS_INCLUDES =
 C_INCLUDES =  \
 -I./jvos/component/soc/stm32/stm32f10x \
 -I./jvos/component/soc/stm32/stm32f10x/fwlib/include \
+-I $(OS_SOURCE)/include \
+-I $(OS_SOURCE)/portable/GCC/ARM_CM3 \
 $(USER_INC)
 
 

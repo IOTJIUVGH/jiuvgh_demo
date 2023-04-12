@@ -8,14 +8,14 @@
  ******************************************************************************
  */
 
-#ifndef __MOS_H__
-#define __MOS_H__
+#ifndef __JOS_H__
+#define __JOS_H__
 
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
 
-#include "merr.h"
+#include "jerr.h"
 
 /** 
  * @addtogroup os
